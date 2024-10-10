@@ -1,26 +1,37 @@
-import { Given, When } from "@cucumber/cucumber";
-import { Browser, chromium, Page } from "playwright";
-
-let page: Page;
+import { Given, When, Then } from "@cucumber/cucumber";
+import { pageFixture } from "./hooks/browserContextFixture";
+import { expect, Expect } from "@playwright/test";
 
 When('I type a first name', async () => {
-    // await page.pause();
-    await page.getByPlaceholder('First Name').fill("Hong");
-  
-  });
-  
-  When('I type a last name', async () => {
-  
-  });
-  
-  When('I enter an email address', async () => {
-  
-  });
-  
-  When('I type a comment', async () => {
-  
-  });
-  
-  When('I click on the submit button', async () => {
-  
-  });
+    await pageFixture.page.getByPlaceholder('First Name').fill("Hong");
+});
+
+When('I type a last name', async () => {
+    await pageFixture.page.getByPlaceholder('Last Name').fill("Phan")
+});
+
+When('I enter an email address', async () => {
+    await pageFixture.page.getByPlaceholder('Address').fill("hphan123@otp.com");
+});
+
+When('I type a comment', async () => {
+    await pageFixture.page.getByPlaceholder('Comment').fill("Commnent something");
+});
+
+When('I click on the submit button', async () => {
+    //Wait for the button to load
+    await pageFixture.page.waitForSelector('input[value="SUBMIT"]');
+
+    //Once loaded, click on the button
+    await pageFixture.page.click('input[value="SUBMIT"]');
+});
+
+Then('I should be presented with a successful contact us submission message', async () => {
+    await pageFixture.page.waitForSelector('#contact_reply h1', { timeout: 60000 })
+
+    //Get the text from the h1 element
+    const text = await pageFixture.page.innerText('#contact_reply h1')
+
+    //Use Playwright's expect function to assert the text of the h1 element
+    expect(text).toBe("Thank You for your Message!")
+});

@@ -1,32 +1,34 @@
 import { Given, When } from "@cucumber/cucumber";
-import { Browser, chromium, Page } from "playwright";
-
-let browser: Browser;
-let context: any;
-let page: Page;
+import { pageFixture } from "./hooks/browserContextFixture";
 
 const url = "https://www.webdriveruniversity.com/";
 
 Given('I navigate to Webdriveruniversity homepage', async () => {
-  //Setup browser instance:
-  browser = await chromium.launch({ headless: false });
-  context = await browser.newContext();
-  page = await context.newPage();
-
   //Access URL
-  await page.goto(url);
+  await pageFixture.page.goto(url);
 
 });
-
-When('I switch to the new browser tab', async () => {
-  page = await context.waitForEvent("page"); // reintialise the page > new tab > page
-  await page.bringToFront();
-
-})
-
 When('I click on the contact us button', async () => {
 
   // await page.pause();
-  const contactUs_Button = await page.getByRole('link', { name: 'CONTACT US Contact Us Form' });
+  const contactUs_Button = await pageFixture.page.getByRole('link', { name: 'CONTACT US Contact Us Form' });
   await contactUs_Button.click();
 });
+
+When('I switch to the new browser tab', async () => {
+  await pageFixture.context.waitForEvent("page"); // reintialise the page > new tab > page
+
+  //Retrieve all current open pages (tabs)
+  const allPages = await pageFixture.context.pages()
+
+  //Assign the most recent tab to pageFixture.page
+  pageFixture.page = allPages[allPages.length - 1];
+
+  //Bring the newly assigned tab to the front (Make it active)
+  await pageFixture.page.bringToFront()
+
+  //Ensure the newly assigned tab is also fully maximised
+  // await pageFixture.page.setViewportSize({ width: 1920, height: 1080});
+
+})
+
