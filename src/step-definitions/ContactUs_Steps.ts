@@ -43,5 +43,22 @@ Then('I should be presented with an unsuccessful contact us message', async () =
 
     const bodyText = await bodyElement.textContent();
 
-    await expect(bodyText).toMatch(/Error: (all fields are required|Invalid email address)/ );
+    await expect(bodyText).toMatch(/Error: (all fields are required|Invalid email address)/);
+});
+
+When('I type a specific first name {string}', async (firstName: string) => {
+    await pageFixture.page.getByPlaceholder('First Name').fill(firstName);
+});
+
+When('I type a specific last name {string}', async (lastName: string) => {
+    await pageFixture.page.getByPlaceholder('Last Name').fill(lastName)
+});
+
+When('I enter an specific email address {string}', async (emailAddress: string) => {
+    await pageFixture.page.getByPlaceholder('Address').fill(emailAddress);
+});
+
+When('I type specific text {string} and a number {int} withing the comment input field', async (word: string, number: number) => {
+    await pageFixture.page.getByPlaceholder('Comment').fill(word + " " + number);
+    await pageFixture.page.pause();
 });
