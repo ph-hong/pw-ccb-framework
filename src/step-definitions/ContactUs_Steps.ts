@@ -1,6 +1,7 @@
 import { Given, When, Then } from "@cucumber/cucumber";
 import { pageFixture } from "./hooks/browserContextFixture";
 import { expect, Expect } from "@playwright/test";
+import { fa, faker } from "@faker-js/faker";
 
 When('I type a first name', async () => {
     await pageFixture.page.getByPlaceholder('First Name').fill("Hong");
@@ -61,4 +62,20 @@ When('I enter an specific email address {string}', async (emailAddress: string) 
 When('I type specific text {string} and a number {int} withing the comment input field', async (word: string, number: number) => {
     await pageFixture.page.getByPlaceholder('Comment').fill(word + " " + number);
     await pageFixture.page.pause();
+});
+
+//Random Data - Faker
+When('I type a random first name', async () => {
+    const randomFirstName = faker.person.firstName();
+    await pageFixture.page.getByPlaceholder('First Name').fill(randomFirstName);
+});
+
+When('I type a random last name', async () => {
+    const randomLastName = faker.person.lastName();
+    await pageFixture.page.getByPlaceholder('Last Name').fill(randomLastName);
+});
+
+When('I enter anrandom  email address', async () => {
+    const randomEmail = faker.internet.email();
+    await pageFixture.page.getByPlaceholder('Email Address').fill(randomEmail);
 });
