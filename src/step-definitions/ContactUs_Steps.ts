@@ -79,3 +79,37 @@ When('I enter anrandom  email address', async () => {
     const randomEmail = faker.internet.email();
     await pageFixture.page.getByPlaceholder('Email Address').fill(randomEmail);
 });
+
+//Scenario
+When('I type a first name {word} and last name {word}', async (firstName: string, lastname: string) => {
+    await pageFixture.page.getByPlaceholder('First Name').fill(firstName);
+    await pageFixture.page.getByPlaceholder('Last Name').fill(lastname);
+});
+
+When('I type an email address {string} and a comment {string}', async (email: string, comment: string) => {
+    await pageFixture.page.getByPlaceholder('Email Address').fill(email);
+    await pageFixture.page.getByPlaceholder('Comment').fill(comment);
+});
+
+Then('I should be presented with a header text {string}', async (message: string) => {
+    //wait for the target element
+    await pageFixture.page.waitForSelector("//h1 | //body", { state: 'visible' });
+
+    //get all elements
+    const elements = await pageFixture.page.locator("//h1 | //body").elementHandles();
+    let foundElementText = '';
+
+    //loop through each of the elements
+    for (let element of elements) {
+        //get the inner text of the element
+        let text = await element.innerText();
+
+        //if statement to check whether text includes expected text
+        if (text.includes(message)) {
+            foundElementText = text;
+            break;
+        }
+    }
+    //perform an assertion
+    expect(foundElementText).toContain(message);
+});

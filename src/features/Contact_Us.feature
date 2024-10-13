@@ -33,13 +33,28 @@ Feature: Webdriveruniversity.com - Contact Us Page
   #   And I click on the submit button
   #   Then I should be presented with a successful contact us submission message
 
-  Scenario: Contact Us Form Submission - Using Random Data
+  # Scenario: Contact Us Form Submission - Using Random Data
+  #   Given I navigate to Webdriveruniversity homepage
+  #   When I click on the contact us button
+  #   And I switch to the new browser tab
+  #   And I type a random first name
+  #   And I type a random last name
+  #   And I enter anrandom  email address
+  #   And I type a comment
+  #   And I click on the submit button
+  #   Then I should be presented with a successful contact us submission message
+
+  Scenario Outline: Validate Contact Us Page
     Given I navigate to Webdriveruniversity homepage
     When I click on the contact us button
     And I switch to the new browser tab
-    And I type a random first name
-    And I type a random last name
-    And I enter anrandom  email address
-    And I type a comment
+    And I type a first name <firstName> and last name <lastName>
+    And I type an email address '<emailAddress>' and a comment '<comment>'
     And I click on the submit button
-    Then I should be presented with a successful contact us submission message
+    Then I should be presented with a header text '<message>'
+
+    Examples:
+      | firstName | lastName | emailAddress     | comment       | message                     |
+      | John      | Jones    | john@example.com | Hello World 1 | Thank You for your Message! |
+      | Mai       | Van      | mai@example.com  | Hello World 2 | Thank You for your Message! |
+      | Lung      | Chi      | lung             | Hello World 3 | Invalid email address       |
